@@ -43,6 +43,7 @@ func (h *Heap) ExtractMax() int {
 	return max
 }
 
+//Sort sorts slice d using heap sort algorithm
 func Sort(d []int) []int {
 	res := make([]int, len(d))
 	h := NewHeap(len(res))
