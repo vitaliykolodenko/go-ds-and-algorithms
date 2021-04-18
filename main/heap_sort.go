@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 //Heap store elements and it's length for heap ds
 type Heap struct {
 	data   []int
@@ -19,9 +21,9 @@ func NewHeap(size int) *Heap {
 func (h *Heap) Add(item int) {
 	h.data = append(h.data, item)
 	h.length++
-	i := h.length - 1
-	for i > 0 && h.data[i] > h.data[i/2] {
-		h.data[i], h.data[i/2] = h.data[i/2], h.data[i]
+	i := h.length
+	for i > 1 && h.data[i-1] > h.data[i/2-1] {
+		h.data[i-1], h.data[i/2-1] = h.data[i/2-1], h.data[i-1]
 		i /= 2
 	}
 }
@@ -37,18 +39,44 @@ func (h *Heap) ExtractMax() int {
 	h.data[0], h.data[h.length-1] = h.data[h.length-1], h.data[0]
 	h.length--
 	heapify(h, 0)
+	fmt.Printf("Heap state after extract: length - %d, heap - %v \n", h.length, h.data)
 	return max
+}
+
+func Sort(d []int) []int {
+	res := make([]int, len(d))
+	h := NewHeap(len(res))
+
+	for _, v := range d {
+		h.Add(v)
+	}
+
+	fmt.Printf("Heap after insert: %v\n", h.data)
+
+	for i := len(d) - 1; i >= 0; i-- {
+		res[i] = h.ExtractMax()
+		fmt.Printf("Adding item to result at %d, val: %d \n", i, res[i])
+	}
+	fmt.Printf("Result is: %v\n", res)
+	return res
 }
 
 func heapify(h *Heap, n int) {
 	l := (n+1)*2 - 1
 	r := (n + 1) * 2
 
-	if l < h.length && h.data[n] < h.data[l] {
-		h.data[n], h.data[l] = h.data[l], h.data[n]
-		heapify(h, l)
-	} else if r < h.length && h.data[n] < h.data[r] {
-		h.data[n], h.data[r] = h.data[r], h.data[n]
-		heapify(h, r)
+	if r < h.length {
+		if h.data[l] > h.data[r] && h.data[l] > h.data[n] {
+			h.data[n], h.data[l] = h.data[l], h.data[n]
+			heapify(h, l)
+		} else if h.data[r] > h.data[n] {
+			h.data[n], h.data[r] = h.data[r], h.data[n]
+			heapify(h, r)
+		}
+	} else {
+		if l < h.length && h.data[n] < h.data[l] {
+			h.data[n], h.data[l] = h.data[l], h.data[n]
+			heapify(h, l)
+		}
 	}
 }

@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestCreation(t *testing.T) {
 	h := NewHeap(3)
@@ -61,5 +64,14 @@ func TestHeapExtractMax(t *testing.T) {
 
 	if h.length != 2 {
 		t.Fatalf("Heap did not extract previous max, length still: %d", h.length)
+	}
+}
+
+func TestHeapSort(t *testing.T) {
+
+	r := Sort([]int{1, 3, 8, 6, 4, 5, 7, 2, 9, 0})
+
+	if !reflect.DeepEqual(r, []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}) {
+		t.Fatalf("Heap did not sort, returned: %v", r)
 	}
 }
